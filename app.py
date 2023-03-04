@@ -151,6 +151,7 @@ if df is not None:
     metric1.metric(f"{sw1}", value_mid_m1,f'{np.round(value_mid_p1.item(),4)} %')
     metric2.metric(f"{sw2}", value_mid_m2,f'{np.round(value_mid_p2.item(),4)} %')
     metric3.metric(f"{sw3}", value_mid_m3,f'{np.round(value_mid_p3.item(),4)} %')
+    left_header.header('Portfel Walutowy')
     left_header.dataframe(df_start,use_container_width=True)
 
 
