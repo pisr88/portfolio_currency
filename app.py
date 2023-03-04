@@ -21,24 +21,27 @@ def get_data(start):
     response = requests.get(url)
     if response.status_code == 200:
         data_raw = response.json()
+
+
+        list_data = []
+        list_date = []
+        for date in data_raw:
+            for data in date['rates']:
+                list_data.append(list(data.values()))
+                list_date.append(date['effectiveDate'])
+
+
+        df_raw = pd.DataFrame(list_data)
+        df_raw['Data'] = list_date
+        df_raw = df_raw.rename(columns={0:'currency',1:'code',2:'mid'})
+
+
+        df = df_raw.copy()
+        return df
     else:
         print("Wystąpił błąd:", response.status_code)
-
-    list_data = []
-    list_date = []
-    for date in data_raw:
-        for data in date['rates']:
-            list_data.append(list(data.values()))
-            list_date.append(date['effectiveDate'])
-
-
-    df_raw = pd.DataFrame(list_data)
-    df_raw['Data'] = list_date
-    df_raw = df_raw.rename(columns={0:'currency',1:'code',2:'mid'})
-
-
-    df = df_raw.copy()
-    return df
+        
+        
 #Defining a function to check the end date
 def end_date_check(start):
     if start + timedelta(days=30) > date.today():
@@ -116,7 +119,7 @@ df_selector['Kwota zwrotu'] = df_selector['Zakupiona wartość'] * df_selector['
 df_selector['Zysk/Strata'] = df_selector['Kwota zwrotu'] - df_selector['Inwestowana kwota']
 
 #Filter the DataFrame to include only data from the end date
-df_end = df_selector.query('Data_new == @end_date')
+df_end = df_selector[df_selector["Data_new"] == df_selector["Data_new"].max()]
 
 
 #HEADER
